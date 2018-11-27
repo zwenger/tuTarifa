@@ -14,7 +14,7 @@ namespace WebApplication6.Models
 
         }
         public DbSet<Viaje> Viajes { get; set; }
-        public DbSet<Usuario> Usuarios { get; set; }
+      
 
 
     }

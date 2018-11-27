@@ -102,3 +102,9 @@ C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\obj\Debug\W
 C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\obj\Debug\WebApplication6.pdb
 C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\obj\Debug\WebApplication6.Migrations.migracion.resources
 C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\obj\Debug\WebApplication6.csproj.GenerateResource.cache
+C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\bin\MercadoPago.dll
+C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\bin\nunit.framework.dll
+C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\bin\ObjectDumper.dll
+C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\bin\nunit.framework.pdb
+C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\bin\nunit.framework.xml
+C:\Users\Ritorto Alvaro\source\repos\WebApplication6\WebApplication6\obj\Debug\WebApplication6.Migrations.borrado.resources

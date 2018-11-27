@@ -1,16 +1,18 @@
 ﻿@model WebApplication6.Models.Viaje
 
 @{
+    /**/
+
     ViewBag.Title = "Create";
 }
 
 <h2>Create</h2>
 
 
-@using (Html.BeginForm()) 
+@using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
-    
+
     <div class="form-horizontal">
         <h4>Viaje</h4>
         <hr />
@@ -18,7 +20,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Origen, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Origen, new { htmlAttributes = new { @class = "form-control" } })
+               @Html.EditorFor(model => model.Origen, new { htmlAttributes = new { @class = "form-control controls", id = "origin-input" } })
                 @Html.ValidationMessageFor(model => model.Origen, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -26,19 +28,11 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Destino, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Destino, new { htmlAttributes = new { @class = "form-control" } })
+               @Html.EditorFor(model => model.Destino, new { htmlAttributes = new { @class = "form-control controls", id = "destination-input" } })
                 @Html.ValidationMessageFor(model => model.Destino, "", new { @class = "text-danger" })
             </div>
         </div>
 
-       <!-- <div class="form-group">
-            @Html.LabelFor(model => model.Costo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Costo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Costo, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        -->
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />
@@ -47,10 +41,196 @@
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+<style>
+    /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+    #map {
+        height: 800px;
+        width: 800px;
+    }
+    /* Optional: Makes the sample page fill the window. */
+   
+
+    /*.controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #origin-input,
+    #destination-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 200px;
+    }
+
+        #origin-input:focus,
+        #destination-input:focus {
+            border-color: #4d90fe;
+        }
+
+    #mode-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        margin-left: 12px;
+        padding: 5px 11px 0px 11px;
+    }
+
+        #mode-selector label {
+            font-family: Roboto;
+            font-size: 13px;
+            font-weight: 300;
+        }*/
+</style>
+
+<div id="map"></div>
+<br />
+<div >
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<script>
+    // This example requires the Places library. Include the libraries=places
+    // parameter when you first load the API. For example:
+    // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places">
+
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            mapTypeControl: false,
+            center: { lat: -26.809908, lng: -65.220295 },
+            zoom: 13
+        });
+
+        new AutocompleteDirectionsHandler(map);
+    }
+
+
+    function AutocompleteDirectionsHandler(map) {
+        this.map = map;
+        this.originPlaceId = null;
+        this.destinationPlaceId = null;
+        this.travelMode = 'DRIVING';
+        var originInput = document.getElementById('origin-input');
+        var destinationInput = document.getElementById('destination-input');
+        var modeSelector = document.getElementById('mode-selector');
+        this.directionsService = new google.maps.DirectionsService;
+        this.directionsDisplay = new google.maps.DirectionsRenderer;
+        this.directionsDisplay.setMap(map);
+
+        var originAutocomplete = new google.maps.places.Autocomplete(
+            originInput, { placeIdOnly: true });
+        var destinationAutocomplete = new google.maps.places.Autocomplete(
+            destinationInput, { placeIdOnly: true });
+
+        //this.setupClickListener('changemode-walking', 'WALKING');
+        //this.setupClickListener('changemode-transit', 'TRANSIT');
+        //this.setupClickListener('changemode-driving', 'DRIVING');
+
+        this.setupPlaceChangedListener(originAutocomplete, 'ORIG');
+        this.setupPlaceChangedListener(destinationAutocomplete, 'DEST');
+
+        //this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(originInput);
+        //this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(destinationInput);
+        //this.map.controls[google.maps.ControlPosition.TOP_LEFT].push(modeSelector);
+
+    }
+
+    // Sets a listener on a radio button to change the filter type on Places
+    // Autocomplete.
+    AutocompleteDirectionsHandler.prototype.setupClickListener = function (id, mode) {
+        var radioButton = document.getElementById(id);
+        var me = this;
+        radioButton.addEventListener('click', function () {
+            me.travelMode = mode;
+            me.route();
+        });
+    };
+
+    AutocompleteDirectionsHandler.prototype.setupPlaceChangedListener = function (autocomplete, mode) {
+        var me = this;
+        autocomplete.bindTo('bounds', this.map);
+        autocomplete.addListener('place_changed', function () {
+            var place = autocomplete.getPlace();
+            if (!place.place_id) {
+                window.alert("Please select an option from the dropdown list.");
+                return;
+            }
+            if (mode === 'ORIG') {
+                me.originPlaceId = place.place_id;
+            } else {
+                me.destinationPlaceId = place.place_id;
+            }
+            me.route();
+        });
+
+    };
+
+    AutocompleteDirectionsHandler.prototype.route = function () {
+        if (!this.originPlaceId || !this.destinationPlaceId) {
+            return;
+        }
+        var me = this;
+
+        this.directionsService.route({
+            origin: { 'placeId': this.originPlaceId },
+            destination: { 'placeId': this.destinationPlaceId },
+            travelMode: this.travelMode
+        }, function (response, status) {
+            if (status === 'OK') {
+                //mostrarPrecio();
+                me.directionsDisplay.setDirections(response);
+            } else {
+                window.alert('Directions request failed due to ' + status);
+            }
+        });
+    };
+
+    //function mostrarPrecio() {
+    //    var origen = document.getElementById('origin-input').value;
+    //    var destino = document.getElementById('destination-input').value;
+    //    alert(origen,destino)
+    //    var url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origen + "&destination=" + destino + "&key=AIzaSyDKu6COjyU7RgAFgtSPqK5b9sISD_3iveY";
+    //    console.log(url)
+    //    //fetch(url, { mode: 'no-cors' })
+    //    //    .then(function (response) {
+    //    //        return response.json();
+    //    //    })
+    //    //    .then(function (myJson) {
+    //    //        console.log(myJson);
+    //    //    });
+
+    //    fetch(url, {
+    //        mode: 'no-cors', // 'cors' by default
+    //        headers: {
+    //            'Content-Type': 'application/json',
+    //            "Access-Control-Allow-Origin": "*",
+    //            "Access-Control-Allow-Credentials": true 
+    //        }
+    //    }).then(function (response) {
+    //        return response.json();
+    //    }).then(function (myJson) {
+    //        console.log(myJson);
+    //    });
+            
+    //}
+
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKu6COjyU7RgAFgtSPqK5b9sISD_3iveY&libraries=places&callback=initMap"
+        async defer></script>

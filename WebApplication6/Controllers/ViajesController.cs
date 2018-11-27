@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -7,6 +8,9 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using WebApplication6.Models;
+using MercadoPago;
+using MercadoPago.Resources;
+using MercadoPago.DataStructures.Preference;
 
 namespace WebApplication6.Controllers
 {
@@ -20,6 +24,10 @@ namespace WebApplication6.Controllers
             //var user = db.Usuarios.Find(1);
            // var viajes = db.Viajes.Where(b => b.Usuario.Id == user.Id);
             return View(db.Viajes.ToList());
+        }
+        public ActionResult Consultar()
+        {
+            return View();
         }
 
         // GET: Viajes/Details/5
@@ -53,13 +61,45 @@ namespace WebApplication6.Controllers
             if (ModelState.IsValid)
             {
                 viaje.CalcularCosto();
+
+                MercadoPago.SDK.ClientId = "623228491029736";
+                MercadoPago.SDK.ClientSecret = "Ccs4Q7fmPE7qIQK4sDVQk9qsPTZvIg3u";
+                Preference preference = new Preference();
+                BackUrls backUrls = new BackUrls();
+                backUrls.Success = "http://localhost:54555/Viajes/Index";
+                preference.BackUrls = backUrls;
+                preference.Items.Add(
+                  new Item()
+                  {
+                      Id = "1234",
+                      Title = "Taxi desde " + viaje.Origen + "hacia " + viaje.Destino,
+                      Quantity = 1,
+                      CurrencyId = 0,
+                      UnitPrice = (decimal)viaje.Costo
+                  }
+                );
+                // Setting a payer object as value for Payer property
+
+                preference.Payer = new Payer()
+                {
+                    Email = "pepito@hotmail.com"
+                };
+
+                preference.Save();
                 db.Viajes.Add(viaje);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                return Redirect(preference.SandboxInitPoint);
+
+
+                
+                
             }
 
             return View(viaje);
+           
         }
+        
 
         // GET: Viajes/Edit/5
         public ActionResult Edit(int? id)

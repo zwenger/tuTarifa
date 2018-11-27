@@ -20,7 +20,7 @@ namespace WebApplication6.Models
         public double Costo { get; set; }
 
         
-        public virtual Usuario Usuario { get; set; }
+      
 
         public void CalcularCosto()
         {
@@ -30,6 +30,7 @@ namespace WebApplication6.Models
             dynamic m = JsonConvert.DeserializeObject(json);
             Console.WriteLine(m.routes[0].legs[0].distance.value);
             Costo = ((double)m.routes[0].legs[0].distance.value * 0.021) + 21;
+
         }
     }
 
