@@ -28,7 +28,6 @@ namespace WebApplication6.Models
             string url = "https://maps.googleapis.com/maps/api/directions/json?origin="+this.Origen+"+tucuman&destination="+this.Destino+"+tucuman"+"&key=AIzaSyDKu6COjyU7RgAFgtSPqK5b9sISD_3iveY";
             var json = new WebClient().DownloadString(url);
             dynamic m = JsonConvert.DeserializeObject(json);
-            Console.WriteLine(m.routes[0].legs[0].distance.value);
             Costo = ((double)m.routes[0].legs[0].distance.value * 0.021) + 21;
 
         }

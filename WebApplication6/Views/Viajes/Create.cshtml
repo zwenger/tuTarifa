@@ -6,40 +6,46 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
 
 
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
+<div class="col-md-5">
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        <h4>Viaje</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Origen, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-               @Html.EditorFor(model => model.Origen, new { htmlAttributes = new { @class = "form-control controls", id = "origin-input" } })
-                @Html.ValidationMessageFor(model => model.Origen, "", new { @class = "text-danger" })
+        <div class="form-horizontal">
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(model => model.Origen, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Origen, new { htmlAttributes = new { @class = "form-control controls", id = "origin-input" } })
+                    @Html.ValidationMessageFor(model => model.Origen, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Destino, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Destino, new { htmlAttributes = new { @class = "form-control controls", id = "destination-input" } })
+                    @Html.ValidationMessageFor(model => model.Destino, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Confirmar" class="btn btn-default" />
+                </div>
             </div>
         </div>
+    }
+</div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.Destino, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-               @Html.EditorFor(model => model.Destino, new { htmlAttributes = new { @class = "form-control controls", id = "destination-input" } })
-                @Html.ValidationMessageFor(model => model.Destino, "", new { @class = "text-danger" })
-            </div>
-        </div>
+<br />
+<div id="map" class="container"></div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
+
 
 
 
@@ -51,59 +57,12 @@
     /* Always set the map height explicitly to define the size of the div
         * element that contains the map. */
     #map {
-        height: 800px;
-        width: 800px;
+        border-radius: 20px;
+        height: 500px;
+        width: 600px;
     }
-    /* Optional: Makes the sample page fill the window. */
-   
-
-    /*.controls {
-        margin-top: 10px;
-        border: 1px solid transparent;
-        border-radius: 2px 0 0 2px;
-        box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        height: 32px;
-        outline: none;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-    }
-
-    #origin-input,
-    #destination-input {
-        background-color: #fff;
-        font-family: Roboto;
-        font-size: 15px;
-        font-weight: 300;
-        margin-left: 12px;
-        padding: 0 11px 0 13px;
-        text-overflow: ellipsis;
-        width: 200px;
-    }
-
-        #origin-input:focus,
-        #destination-input:focus {
-            border-color: #4d90fe;
-        }
-
-    #mode-selector {
-        color: #fff;
-        background-color: #4d90fe;
-        margin-left: 12px;
-        padding: 5px 11px 0px 11px;
-    }
-
-        #mode-selector label {
-            font-family: Roboto;
-            font-size: 13px;
-            font-weight: 300;
-        }*/
 </style>
 
-<div id="map"></div>
-<br />
-<div >
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 
 <script>
@@ -194,42 +153,12 @@
             travelMode: this.travelMode
         }, function (response, status) {
             if (status === 'OK') {
-                //mostrarPrecio();
                 me.directionsDisplay.setDirections(response);
             } else {
                 window.alert('Directions request failed due to ' + status);
             }
         });
     };
-
-    //function mostrarPrecio() {
-    //    var origen = document.getElementById('origin-input').value;
-    //    var destino = document.getElementById('destination-input').value;
-    //    alert(origen,destino)
-    //    var url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origen + "&destination=" + destino + "&key=AIzaSyDKu6COjyU7RgAFgtSPqK5b9sISD_3iveY";
-    //    console.log(url)
-    //    //fetch(url, { mode: 'no-cors' })
-    //    //    .then(function (response) {
-    //    //        return response.json();
-    //    //    })
-    //    //    .then(function (myJson) {
-    //    //        console.log(myJson);
-    //    //    });
-
-    //    fetch(url, {
-    //        mode: 'no-cors', // 'cors' by default
-    //        headers: {
-    //            'Content-Type': 'application/json',
-    //            "Access-Control-Allow-Origin": "*",
-    //            "Access-Control-Allow-Credentials": true 
-    //        }
-    //    }).then(function (response) {
-    //        return response.json();
-    //    }).then(function (myJson) {
-    //        console.log(myJson);
-    //    });
-            
-    //}
 
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKu6COjyU7RgAFgtSPqK5b9sISD_3iveY&libraries=places&callback=initMap"

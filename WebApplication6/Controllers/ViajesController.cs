@@ -71,8 +71,8 @@ namespace WebApplication6.Controllers
                 preference.Items.Add(
                   new Item()
                   {
-                      Id = "1234",
-                      Title = "Taxi desde " + viaje.Origen + "hacia " + viaje.Destino,
+                      Id = "1",
+                      Title = " Taxi desde " + viaje.Origen + " hacia " + viaje.Destino,
                       Quantity = 1,
                       CurrencyId = 0,
                       UnitPrice = (decimal)viaje.Costo
@@ -82,7 +82,7 @@ namespace WebApplication6.Controllers
 
                 preference.Payer = new Payer()
                 {
-                    Email = "pepito@hotmail.com"
+                    Email = "nosotros@gmail.com"
                 };
 
                 preference.Save();
@@ -90,10 +90,6 @@ namespace WebApplication6.Controllers
                 db.SaveChanges();
 
                 return Redirect(preference.SandboxInitPoint);
-
-
-                
-                
             }
 
             return View(viaje);
